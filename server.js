@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server is on port: ${PORT}`))
 
+// csv data as json pushed asynchronously into array
 const data = [];
 
 csv({
@@ -25,22 +26,21 @@ csv({
 
 // all data provided - too large for client
 app.get('/api/data', (req, res) => {
-    res.json(data);
+    res.send(data);
 });
 
 // filter by postcode - includes space in URL / HTTP Request 
-app.get('/api/data/:postcode', (req, res) => {
-    res.send(data.filter(item => item.postcode === req.params.postcode));
-});
+router.get('/:postcode', (req, res) => {
+    const found = data.some(item => item.postcode === parseInt(req.params.postcode));
+    // RETURNING 400 BAD REQUEST IF NOT FOUND
+    if (found) {
+      res.json(data.filter(item => item.postcode === parseInt(req.params.postcode)));
+    } else {
+      res.status(400).json({ msg: `No property with the postcode of ${req.params.postcode}` });
+    }
+  });
 
-//// RETURNING 400 BAD REQUEST IF NOT FOUND - e.g. INVALID ENTRY////
-// router.get('/:postcode', (req, res) => {
-//     const found = data.some(item => item.postcode === parseInt(req.params.postcode));
-  
-//     if (found) {
-//       res.json(data.filter(item => item.postcode === parseInt(req.params.postcode)));
-//     } else {
-//       res.status(400).json({ msg: `No property with the postcode of ${req.params.postcode}` });
-//     }
-//   });
-
+// without 400 retuning 200 GOOD and empty array
+// app.get('/api/data/:postcode', (req, res) => {
+//     res.send(data.filter(item => item.postcode === req.params.postcode));
+// });
