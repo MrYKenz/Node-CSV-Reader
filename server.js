@@ -1,7 +1,6 @@
 const express = require('express');
 const request = require('request');
 const csv = require('csvtojson');
-// const testData = require('./Sample');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
