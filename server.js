@@ -30,17 +30,18 @@ app.get('/api/data', (req, res) => {
 });
 
 // filter by postcode - includes space in URL / HTTP Request 
-router.get('/:postcode', (req, res) => {
-    const found = data.some(item => item.postcode === parseInt(req.params.postcode));
-    // RETURNING 400 BAD REQUEST IF NOT FOUND
-    if (found) {
-      res.json(data.filter(item => item.postcode === parseInt(req.params.postcode)));
-    } else {
-      res.status(400).json({ msg: `No property with the postcode of ${req.params.postcode}` });
-    }
-  });
+app.get('/api/data/:postcode', (req, res) => {
+    res.send(data.filter(item => item.postcode === req.params.postcode));
+});
 
-// without 400 retuning 200 GOOD and empty array
-// app.get('/api/data/:postcode', (req, res) => {
-//     res.send(data.filter(item => item.postcode === req.params.postcode));
+// Returns 404 Not Found if request made too early
+// CSV data will take time to stream
+// app.get('/:postcode', (req, res) => {
+//   const found = data.some(item => item.postcode === req.params.postcode;
+//   if (found) {
+//     res.json(data.filter(item => item.postcode === req.params.postcode;
+//   } else {
+//     res.status(400).json({ msg: `No property with the postcode of ${req.params.postcode}` });
+//   }
 // });
+
